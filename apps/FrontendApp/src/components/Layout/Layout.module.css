@@ -1,0 +1,59 @@
+.layout {
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #001529;
+  padding: 0 20px;
+  color: white;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.logoutButton {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.logoutButton:hover {
+  color: #1890ff;
+}
+
+.sider {
+  background: #fff;
+}
+
+.menu {
+  height: 100%;
+  border-right: 0;
+}
+
+.menuItemPlaceholder {
+  padding: 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.menuItemPlaceholder:hover {
+  background-color: #f0f2f5;
+}
+
+.content {
+  padding: 24px;
+  background: #f0f2f5;
+  min-height: 280px;
+}
+
+.footer {
+  text-align: center;
+  background: #001529;
+  color: white;
+}

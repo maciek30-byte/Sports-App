@@ -1,0 +1,24 @@
+.form {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.input {
+  width: 100%;
+}
+
+.datePicker {
+  width: 100%;
+}
+
+.submitButton {
+  width: 100%;
+  background-color: #1890ff;
+  border-color: #1890ff;
+  color: white;
+}
+
+.submitButton:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
