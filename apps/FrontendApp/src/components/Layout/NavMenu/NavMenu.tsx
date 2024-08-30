@@ -3,7 +3,7 @@ import { Layout, Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import styles from '../Layout.module.css';
 
-export const NavMenu = () => {
+const NavMenu: React.FC = () => {
   return (
     <Layout.Sider className={styles.sider}>
       <Menu
@@ -25,7 +25,12 @@ export const NavMenu = () => {
         <Menu.Item key="assistant-suggestions">
           <Link to="/assistant-suggestions">Sugestie Asystenta</Link>
         </Menu.Item>
+        <Menu.Item key="current-cycle">
+          <Link to="/current-cycle">Aktualny Trening</Link>
+        </Menu.Item>
       </Menu>
     </Layout.Sider>
   );
 };
+
+export default NavMenu;

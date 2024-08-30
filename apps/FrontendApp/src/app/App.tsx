@@ -8,10 +8,11 @@ import LoginForm from '../components/Forms/LoginUserForm/LoginUserForm';
 import CharacterLevelPage from '../pages/CharacterLevelPage';
 
 import PersonalRecordsPage from '../pages/PersonalRecordsPage';
+
+import CurrentCyclePage from '../pages/CurrentCyclePage';
 import { Dashboard } from '../components/Dashboard/DashBoard';
 import DesignMicrocyclePage from '../pages/DesingMicroCyclePage';
 import AssistantSuggestionsPage from '../pages/AssistanSuggestionPage';
-
 
 export const App = observer(() => {
   const { authStore } = useStore();
@@ -28,6 +29,7 @@ export const App = observer(() => {
         <Route path="/design-microcycle" element={<DesignMicrocyclePage />} />
         <Route path="/personal-records" element={<PersonalRecordsPage />} />
         <Route path="/assistant-suggestions" element={<AssistantSuggestionsPage />} />
+        <Route path="/current-cycle" element={<CurrentCyclePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </LayoutContainer>

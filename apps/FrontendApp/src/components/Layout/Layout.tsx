@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout } from 'antd';
 import styles from './Layout.module.css';
-import { NavMenu } from './NavMenu/NavMenu';
+import NavMenu from './NavMenu/NavMenu';
 import { Header } from './Header/Header';
 import { Content, Footer } from 'antd/es/layout/layout';
 
