@@ -5,8 +5,7 @@ export class Store {
   authStore: AuthStore;
 
   constructor() {
-    makeAutoObservable(this);
-
     this.authStore = new AuthStore();
+    makeAutoObservable(this);
   }
 }

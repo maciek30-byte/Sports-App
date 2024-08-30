@@ -1,19 +1,18 @@
 import { makeAutoObservable } from 'mobx';
 
 export class AuthStore {
-
-  private _isUserLoggedIn = true
-  userName: string
+  isUserLoggedIn = false;
+  userName = '';
 
   constructor() {
-    makeAutoObservable(this)
+    makeAutoObservable(this);
   }
 
-  get isUserLoggedIn(): boolean {
-    return this._isUserLoggedIn;
+  setIsUserLoggedIn(value: boolean) {
+    this.isUserLoggedIn = value;
   }
 
-  set isUserLoggedIn(value: boolean) {
-    this._isUserLoggedIn = value;
+  setUserName(name: string) {
+    this.userName = name;
   }
 }

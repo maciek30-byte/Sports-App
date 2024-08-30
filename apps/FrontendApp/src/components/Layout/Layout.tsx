@@ -5,18 +5,17 @@ import { NavMenu } from './NavMenu/NavMenu';
 import { Header } from './Header/Header';
 import { Content, Footer } from 'antd/es/layout/layout';
 
-export const LayoutContainer = () => {
+export const LayoutContainer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <Layout className={styles.layout}>
       <Header />
       <Layout>
         <NavMenu />
         <Content className={styles.content}>
-          <h1>Children</h1>
+          {children}
         </Content>
       </Layout>
       <Footer className={styles.footer}>©2024 Your Company</Footer>
     </Layout>
   );
 };
-

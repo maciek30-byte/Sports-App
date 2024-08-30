@@ -1,0 +1,53 @@
+.container {
+  padding: 20px;
+}
+
+.weekGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.dayCard {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.dayCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dayName {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.hasWorkout {
+  background-color: #e6f7ff;
+  border-color: #91d5ff;
+}
+
+.workoutInfo {
+  font-size: 12px;
+  text-align: center;
+}
+
+.modalForm {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.exerciseList {
+  margin-top: 16px;
+}
+
+.exerciseItem {
+  margin-bottom: 8px;
+}

@@ -1,0 +1,19 @@
+.container {
+  padding: 20px;
+}
+
+.levelCircle {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.weightInfo {
+  text-align: center;
+}
+
+.weightValue {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1890ff;
+}

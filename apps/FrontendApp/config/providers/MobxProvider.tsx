@@ -1,28 +1,17 @@
-import React, { createContext, FC, ReactNode } from 'react';
-import { ProviderType } from './types';
+import React, { createContext, useContext } from 'react';
 import { Store } from '../../src/Store';
 
-const GlobalStoreContext = createContext<Store | null>(null);
+const StoreContext = createContext<Store | null>(null);
 
-const globalStore = new Store();
-
-interface MobxProviderProps {
-  children: ReactNode;
-}
-
-export const MobxProvider: FC<MobxProviderProps> = ({ children }) => {
-  return (
-    <GlobalStoreContext.Provider value={globalStore}>
-      {children}
-    </GlobalStoreContext.Provider>
-  );
+export const MobxProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const store = new Store();
+  return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>;
 };
 
-
 export const useStore = () => {
-  const store = React.useContext(GlobalStoreContext);
+  const store = useContext(StoreContext);
   if (!store) {
-    throw new Error('useGlobalStore must be used within MobxProvider');
+    throw new Error('useStore must be used within MobxProvider');
   }
   return store;
 };
