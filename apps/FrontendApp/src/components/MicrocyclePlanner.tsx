@@ -6,7 +6,7 @@ import CreateWorkoutForm from './Forms/CreateWorkoutForm/CreateWorkoutForm';
 
 const { Title } = Typography;
 
-const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const daysOfWeek = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela'];
 
 interface DayPlan {
   type: 'workout' | 'rest';
@@ -29,8 +29,8 @@ const MicrocyclePlanner: React.FC = () => {
     setSelectedDay(null);
   };
 
-  const handleWorkoutSave = (day: string, workout: any) => {
-    setWorkouts(prev => ({ ...prev, [day]: { type: 'workout', exercises: workout.exercises } }));
+  const handleWorkoutSave = (workout: any) => {
+    setWorkouts(prev => ({ ...prev, [workout.day]: { type: 'workout', exercises: workout.exercises } }));
     handleModalClose();
   };
 
@@ -47,7 +47,6 @@ const MicrocyclePlanner: React.FC = () => {
   };
 
   const handleMicrocycleSubmit = () => {
-    // TODO: Implement API call to save microcycle
     console.log('Submitting microcycle:', workouts);
     message.success('Microcycle submitted successfully!');
     setIsSummaryModalVisible(false);
@@ -70,9 +69,8 @@ const MicrocyclePlanner: React.FC = () => {
       <Title level={2}>Plan Your Microcycle</Title>
       <div className={styles.weekGrid}>
         {daysOfWeek.map((day) => (
-          <Dropdown overlay={menu(day)} trigger={['click']}>
+          <Dropdown overlay={menu(day)} trigger={['click']} key={day}>
             <Card
-              key={day}
               className={`${styles.dayCard} ${workouts[day]?.type === 'workout' ? styles.hasWorkout : ''} ${workouts[day]?.type === 'rest' ? styles.restDay : ''}`}
             >
               <div className={styles.dayName}>{day}</div>
@@ -100,8 +98,9 @@ const MicrocyclePlanner: React.FC = () => {
       >
         {selectedDay && (
           <CreateWorkoutForm
-            onSave={(workout) => handleWorkoutSave(selectedDay, workout)}
+            onSave={handleWorkoutSave}
             initialWorkout={workouts[selectedDay]?.type === 'workout' ? { exercises: workouts[selectedDay].exercises! } : undefined}
+            selectedDay={selectedDay}
           />
         )}
       </Modal>
@@ -129,7 +128,7 @@ const MicrocyclePlanner: React.FC = () => {
                 <ul>
                   {workouts[day].exercises!.map((exercise: any, index: number) => (
                     <li key={index}>
-                      {exercise.exerciseName}: {exercise.sets} sets, {exercise.weight} kg, {exercise.reps} reps
+                      {exercise.exerciseName}: {exercise.sets} sets, {exercise.reps} reps, {exercise.weight} kg
                     </li>
                   ))}
                 </ul>

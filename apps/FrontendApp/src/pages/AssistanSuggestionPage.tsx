@@ -6,8 +6,8 @@ const { Title } = Typography;
 const AssistantSuggestionsPage: React.FC = () => {
   return (
     <div>
-      <Title level={2}>Sugestie Asystenta</Title>
-      <p>Tutaj będą wyświetlane sugestie i porady od asystenta treningowego.</p>
+      <Title level={2}>Sugestie Asystenta AI</Title>
+      <p>Tutaj będą wyświetlane sugestie i porady od Trenera AI.</p>
     </div>
   );
 };
