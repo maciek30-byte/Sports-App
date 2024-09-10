@@ -1,0 +1,23 @@
+.container {
+  padding: 24px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.exerciseCard {
+  margin-bottom: 16px;
+}
+
+.exerciseCard h3 {
+  color: #1890ff;
+  margin-bottom: 8px;
+}
+
+.exerciseCard p {
+  margin-bottom: 16px;
+}
+
+.exerciseCard :global(.ant-checkbox-wrapper) {
+  margin-right: 16px;
+}

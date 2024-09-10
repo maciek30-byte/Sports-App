@@ -1,35 +1,40 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../../config/providers/MobxProvider';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { LayoutContainer } from '../components/Layout/Layout';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import LoginForm from '../components/Forms/LoginUserForm/LoginUserForm';
-
+import CreateUserForm from '../components/Forms/CreateUserForm/CreateUserForm';
+import { LayoutContainer } from '../components/Layout/Layout';
+import Dashboard from '../components/Dashboard/DashBoard';
 import CharacterLevelPage from '../pages/CharacterLevelPage';
+import MicrocyclePlanner from '../components/MicrocyclePlanner';
+import CurrentWorkout from '../components/CurrentWorkout/CurrentWorkout';
+import PersonalRecords from '../components/PersonalRecords/PersonalRecords';
+import UserProgress from '../components/UserProgress/UserProgress';
 
-import PersonalRecordsPage from '../pages/PersonalRecordsPage';
-
-import CurrentCyclePage from '../pages/CurrentCyclePage';
-import { Dashboard } from '../components/Dashboard/DashBoard';
-import DesignMicrocyclePage from '../pages/DesingMicroCyclePage';
-import AssistantSuggestionsPage from '../pages/AssistanSuggestionPage';
 
 export const App = observer(() => {
   const { authStore } = useStore();
 
-  // if (!authStore.isUserLoggedIn) {
-  //   return <LoginForm />;
-  // }
+  if (!authStore.isUserLoggedIn) {
+    return (
+      <Routes>
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/register" element={<CreateUserForm />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    );
+  }
 
   return (
     <LayoutContainer>
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/character-level" element={<CharacterLevelPage />} />
-        <Route path="/design-microcycle" element={<DesignMicrocyclePage />} />
-        <Route path="/personal-records" element={<PersonalRecordsPage />} />
-        <Route path="/assistant-suggestions" element={<AssistantSuggestionsPage />} />
-        <Route path="/current-cycle" element={<CurrentCyclePage />} />
+        <Route path="/design-microcycle" element={<MicrocyclePlanner />} />
+        <Route path="/current-workout" element={<CurrentWorkout />} />
+        <Route path="/personal-records" element={<PersonalRecords />} />
+        <Route path="/user-progress" element={<UserProgress />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </LayoutContainer>

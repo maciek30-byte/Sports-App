@@ -1,0 +1,11 @@
+.recordsContainer {
+  padding: 24px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.recordsContainer h2 {
+  margin-bottom: 16px;
+  color: #1890ff;
+}

@@ -19,14 +19,14 @@ const NavMenu: React.FC = () => {
         <Menu.Item key="design-microcycle">
           <Link to="/design-microcycle">Zaprojektuj MikroCykl</Link>
         </Menu.Item>
+        <Menu.Item key="current-workout">
+          <Link to="/current-workout">Aktualny Trening</Link>
+        </Menu.Item>
         <Menu.Item key="personal-records">
           <Link to="/personal-records">Twoje Rekordy</Link>
         </Menu.Item>
-        <Menu.Item key="assistant-suggestions">
-          <Link to="/assistant-suggestions">Sugestie Asystenta</Link>
-        </Menu.Item>
-        <Menu.Item key="current-cycle">
-          <Link to="/current-cycle">Aktualny Trening</Link>
+        <Menu.Item key="user-progress">
+          <Link to="/user-progress">Twój Postęp</Link>
         </Menu.Item>
       </Menu>
     </Layout.Sider>

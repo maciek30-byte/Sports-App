@@ -1,21 +1,31 @@
 import React from 'react';
-import { Form, Input, Button, Select, InputNumber } from 'antd';
+import { Form, Input, Button, Select, InputNumber, message } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import styles from './CreateUserForm.module.css';
 import { RegisterUserValues } from '../types';
+import { useStore } from '../../../../config/providers/MobxProvider';
+import { observer } from 'mobx-react-lite';
 
 const { Option } = Select;
 
-export const CreateUserForm: React.FC = () => {
+export const CreateUserForm: React.FC = observer(() => {
   const [form] = Form.useForm();
+  const { authStore } = useStore();
+  const navigate = useNavigate();
 
-
-  const onFinish = (values: RegisterUserValues) => {
-    console.log('Received values of form: ', values);
+  const onFinish = async (values: RegisterUserValues) => {
+    try {
+      await authStore.register(values.name, values.email, values.password, values.age, values.gender);
+      message.success('User successfully registered');
+      navigate('/login');
+    } catch (error) {
+      message.error('Registration error: ' + (error.response?.data?.msg || 'Unknown error'));
+    }
   };
 
   return (
     <div className={styles.formWrapper}>
-      <h1>Create User</h1>
+      <h1>Create Account</h1>
       <Form
         form={form}
         name="user_create"
@@ -25,9 +35,20 @@ export const CreateUserForm: React.FC = () => {
         className={styles.userForm}
       >
         <Form.Item
-          name="login"
-          label="Login"
-          rules={[{ required: true, message: 'Please input your login!' }]}
+          name="name"
+          label="Name"
+          rules={[{ required: true, message: 'Please input your name!' }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="email"
+          label="Email"
+          rules={[
+            { required: true, message: 'Please input your email!' },
+            { type: 'email', message: 'Invalid email format!' }
+          ]}
         >
           <Input />
         </Form.Item>
@@ -38,14 +59,6 @@ export const CreateUserForm: React.FC = () => {
           rules={[{ required: true, message: 'Please input your password!' }]}
         >
           <Input.Password />
-        </Form.Item>
-
-        <Form.Item
-          name="name"
-          label="Name"
-          rules={[{ required: true, message: 'Please input your name!' }]}
-        >
-          <Input />
         </Form.Item>
 
         <Form.Item
@@ -70,12 +83,12 @@ export const CreateUserForm: React.FC = () => {
 
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Create User
+            Create Account
           </Button>
         </Form.Item>
       </Form>
     </div>
   );
-};
+});
 
-//@TODO move rules and text contents to separate json files//
+export default CreateUserForm;

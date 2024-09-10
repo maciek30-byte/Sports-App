@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Form, Input, message } from 'antd';
+import { Link } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import styles from './LoginUserForm.module.css';
-import { OutMessagesService } from '../../../../messages/outMessages/OutMessagesService';
 import { useStore } from '../../../../config/providers/MobxProvider';
 import { LoginValues } from '../types';
 
@@ -12,15 +12,12 @@ const LoginForm: React.FC = observer(() => {
 
   const onFinish = async (values: LoginValues) => {
     try {
-      await OutMessagesService.sendLoginMessage(values);
+      await authStore.login(values.email, values.password);
       message.success('Zalogowano pomyślnie');
-      authStore.isUserLoggedIn = true;
-      authStore.userName = values.email;
     } catch (error) {
       message.error(
         'Błąd logowania: ' + (error.response?.data?.msg || 'Nieznany błąd')
       );
-      authStore.isUserLoggedIn = false;
     }
   };
 
@@ -44,19 +41,28 @@ const LoginForm: React.FC = observer(() => {
               { required: true, message: 'Proszę podać email!' },
               { type: 'email', message: 'Nieprawidłowy format email!' },
             ]}
-          />
-          <Input.Password name="password" type="password" />
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[{ required: true, message: 'Proszę podać hasło!' }]}
+          >
+            <Input.Password />
+          </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">
               Zaloguj
             </Button>
           </Form.Item>
         </Form>
+        <div className={styles.registerLink}>
+          Nie masz konta? <Link to="/register">Zarejestruj się</Link>
+        </div>
       </div>
     </div>
   );
 });
 
 export default LoginForm;
-
-//@TODO move text away from component//

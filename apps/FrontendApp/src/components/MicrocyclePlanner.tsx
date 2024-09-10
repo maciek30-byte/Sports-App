@@ -1,22 +1,25 @@
 import React, { useState } from 'react';
-import { Card, Modal, Button, Typography, Space, message, Menu, Dropdown } from 'antd';
+import { Card, Modal, Button, Typography, Space, message, Menu, Dropdown, InputNumber } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
+
 import styles from './MicrocyclePlanner.module.css';
+import { DayPlan, Microcycle } from '../models/MicroCycle';
+import { MicrocycleService } from '../../AuthService/MicroCycleService';
 import CreateWorkoutForm from './Forms/CreateWorkoutForm/CreateWorkoutForm';
 
 const { Title } = Typography;
 
-const daysOfWeek = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela'];
-
-interface DayPlan {
-  type: 'workout' | 'rest';
-  exercises?: any[];
-}
+const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 const MicrocyclePlanner: React.FC = () => {
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [workouts, setWorkouts] = useState<Record<string, DayPlan>>({});
+  const [microcycle, setMicrocycle] = useState<Microcycle>({
+    startDate: new Date(),
+    endDate: new Date(new Date().setDate(new Date().getDate() + 6)),
+    dayPlans: {},
+    weekCount: 1
+  });
   const [isSummaryModalVisible, setIsSummaryModalVisible] = useState(false);
 
   const handleDayClick = (day: string) => {
@@ -29,28 +32,43 @@ const MicrocyclePlanner: React.FC = () => {
     setSelectedDay(null);
   };
 
-  const handleWorkoutSave = (workout: any) => {
-    setWorkouts(prev => ({ ...prev, [workout.day]: { type: 'workout', exercises: workout.exercises } }));
+  const handleWorkoutSave = (workout: DayPlan) => {
+    setMicrocycle(prev => ({
+      ...prev,
+      dayPlans: { ...prev.dayPlans, [workout.day]: workout },
+    }));
     handleModalClose();
   };
 
   const handleRestDay = (day: string) => {
-    setWorkouts(prev => ({ ...prev, [day]: { type: 'rest' } }));
+    setMicrocycle(prev => ({
+      ...prev,
+      dayPlans: { ...prev.dayPlans, [day]: { day, type: 'rest' } },
+    }));
   };
 
   const handleMicrocycleComplete = () => {
-    if (Object.keys(workouts).length === 7) {
+    if (Object.keys(microcycle.dayPlans).length === 7) {
       setIsSummaryModalVisible(true);
     } else {
       message.error('Please plan all days of the week.');
     }
   };
 
-  const handleMicrocycleSubmit = () => {
-    console.log('Submitting microcycle:', workouts);
-    message.success('Microcycle submitted successfully!');
-    setIsSummaryModalVisible(false);
-    setWorkouts({});
+  const handleMicrocycleSubmit = async () => {
+    try {
+      await MicrocycleService.createMicrocycle(microcycle);
+      message.success('Microcycle submitted successfully!');
+      setIsSummaryModalVisible(false);
+      setMicrocycle({
+        startDate: new Date(),
+        endDate: new Date(new Date().setDate(new Date().getDate() + 6)),
+        dayPlans: {},
+        weekCount: 1
+      });
+    } catch (error) {
+      message.error('Failed to submit microcycle. Please try again.');
+    }
   };
 
   const menu = (day: string) => (
@@ -67,19 +85,28 @@ const MicrocyclePlanner: React.FC = () => {
   return (
     <div className={styles.container}>
       <Title level={2}>Plan Your Microcycle</Title>
+      <Space className={styles.weekCountInput}>
+        <span>Number of weeks:</span>
+        <InputNumber
+          min={1}
+          max={12}
+          defaultValue={1}
+          onChange={(value) => setMicrocycle(prev => ({ ...prev, weekCount: value }))}
+        />
+      </Space>
       <div className={styles.weekGrid}>
         {daysOfWeek.map((day) => (
           <Dropdown overlay={menu(day)} trigger={['click']} key={day}>
             <Card
-              className={`${styles.dayCard} ${workouts[day]?.type === 'workout' ? styles.hasWorkout : ''} ${workouts[day]?.type === 'rest' ? styles.restDay : ''}`}
+              className={`${styles.dayCard} ${microcycle.dayPlans[day]?.type === 'workout' ? styles.hasWorkout : ''} ${microcycle.dayPlans[day]?.type === 'rest' ? styles.restDay : ''}`}
             >
               <div className={styles.dayName}>{day}</div>
-              {workouts[day]?.type === 'workout' && (
+              {microcycle.dayPlans[day]?.type === 'workout' && (
                 <div className={styles.workoutInfo}>
-                  {workouts[day].exercises!.length} exercises
+                  {microcycle.dayPlans[day].exercises?.length} exercises
                 </div>
               )}
-              {workouts[day]?.type === 'rest' && (
+              {microcycle.dayPlans[day]?.type === 'rest' && (
                 <div className={styles.restInfo}>
                   Rest Day
                 </div>
@@ -99,7 +126,7 @@ const MicrocyclePlanner: React.FC = () => {
         {selectedDay && (
           <CreateWorkoutForm
             onSave={handleWorkoutSave}
-            initialWorkout={workouts[selectedDay]?.type === 'workout' ? { exercises: workouts[selectedDay].exercises! } : undefined}
+            initialWorkout={microcycle.dayPlans[selectedDay]?.type === 'workout' ? microcycle.dayPlans[selectedDay] : undefined}
             selectedDay={selectedDay}
           />
         )}
@@ -124,11 +151,11 @@ const MicrocyclePlanner: React.FC = () => {
           {daysOfWeek.map((day) => (
             <div key={day}>
               <h3>{day}</h3>
-              {workouts[day]?.type === 'workout' ? (
+              {microcycle.dayPlans[day]?.type === 'workout' ? (
                 <ul>
-                  {workouts[day].exercises!.map((exercise: any, index: number) => (
+                  {microcycle.dayPlans[day].exercises?.map((exercise, index) => (
                     <li key={index}>
-                      {exercise.exerciseName}: {exercise.sets} sets, {exercise.reps} reps, {exercise.weight} kg
+                      {exercise.name}: {exercise.sets} sets, {exercise.reps} reps, {exercise.weight} kg
                     </li>
                   ))}
                 </ul>
