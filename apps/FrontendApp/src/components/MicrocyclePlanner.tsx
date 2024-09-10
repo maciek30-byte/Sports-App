@@ -3,7 +3,7 @@ import { Card, Modal, Button, Typography, Space, message, Menu, Dropdown, InputN
 import { DownOutlined } from '@ant-design/icons';
 
 import styles from './MicrocyclePlanner.module.css';
-import { DayPlan, Microcycle } from '../models/MicroCycle';
+import { DayPlan, Microcycle, WorkoutPlan } from '../types/Microcycle';
 import { MicrocycleService } from '../../AuthService/MicroCycleService';
 import CreateWorkoutForm from './Forms/CreateWorkoutForm/CreateWorkoutForm';
 
@@ -17,7 +17,7 @@ const MicrocyclePlanner: React.FC = () => {
   const [microcycle, setMicrocycle] = useState<Microcycle>({
     startDate: new Date(),
     endDate: new Date(new Date().setDate(new Date().getDate() + 6)),
-    dayPlans: {},
+    dayPlans: Object.fromEntries(daysOfWeek.map(day => [day, { type: 'rest' } as DayPlan])),
     weekCount: 1
   });
   const [isSummaryModalVisible, setIsSummaryModalVisible] = useState(false);
@@ -32,10 +32,10 @@ const MicrocyclePlanner: React.FC = () => {
     setSelectedDay(null);
   };
 
-  const handleWorkoutSave = (workout: DayPlan) => {
+  const handleWorkoutSave = (workout: WorkoutPlan) => {
     setMicrocycle(prev => ({
       ...prev,
-      dayPlans: { ...prev.dayPlans, [workout.day]: workout },
+      dayPlans: { ...prev.dayPlans, [workout.day]: { ...workout, type: 'workout' } },
     }));
     handleModalClose();
   };
@@ -43,7 +43,7 @@ const MicrocyclePlanner: React.FC = () => {
   const handleRestDay = (day: string) => {
     setMicrocycle(prev => ({
       ...prev,
-      dayPlans: { ...prev.dayPlans, [day]: { day, type: 'rest' } },
+      dayPlans: { ...prev.dayPlans, [day]: { type: 'rest' } },
     }));
   };
 
@@ -57,16 +57,18 @@ const MicrocyclePlanner: React.FC = () => {
 
   const handleMicrocycleSubmit = async () => {
     try {
+      console.log('Submitting microcycle:', microcycle);
       await MicrocycleService.createMicrocycle(microcycle);
       message.success('Microcycle submitted successfully!');
       setIsSummaryModalVisible(false);
       setMicrocycle({
         startDate: new Date(),
         endDate: new Date(new Date().setDate(new Date().getDate() + 6)),
-        dayPlans: {},
+        dayPlans: Object.fromEntries(daysOfWeek.map(day => [day, { type: 'rest' } as DayPlan])),
         weekCount: 1
       });
     } catch (error) {
+      console.error('Error submitting microcycle:', error);
       message.error('Failed to submit microcycle. Please try again.');
     }
   };
@@ -91,7 +93,7 @@ const MicrocyclePlanner: React.FC = () => {
           min={1}
           max={12}
           defaultValue={1}
-          onChange={(value) => setMicrocycle(prev => ({ ...prev, weekCount: value }))}
+          onChange={(value) => setMicrocycle(prev => ({ ...prev, weekCount: value as number }))}
         />
       </Space>
       <div className={styles.weekGrid}>
@@ -103,7 +105,7 @@ const MicrocyclePlanner: React.FC = () => {
               <div className={styles.dayName}>{day}</div>
               {microcycle.dayPlans[day]?.type === 'workout' && (
                 <div className={styles.workoutInfo}>
-                  {microcycle.dayPlans[day].exercises?.length} exercises
+                  {(microcycle.dayPlans[day] as WorkoutPlan).exercises?.length || 0} exercises
                 </div>
               )}
               {microcycle.dayPlans[day]?.type === 'rest' && (
@@ -126,7 +128,7 @@ const MicrocyclePlanner: React.FC = () => {
         {selectedDay && (
           <CreateWorkoutForm
             onSave={handleWorkoutSave}
-            initialWorkout={microcycle.dayPlans[selectedDay]?.type === 'workout' ? microcycle.dayPlans[selectedDay] : undefined}
+            initialWorkout={microcycle.dayPlans[selectedDay]?.type === 'workout' ? microcycle.dayPlans[selectedDay] as WorkoutPlan : undefined}
             selectedDay={selectedDay}
           />
         )}
@@ -153,7 +155,7 @@ const MicrocyclePlanner: React.FC = () => {
               <h3>{day}</h3>
               {microcycle.dayPlans[day]?.type === 'workout' ? (
                 <ul>
-                  {microcycle.dayPlans[day].exercises?.map((exercise, index) => (
+                  {(microcycle.dayPlans[day] as WorkoutPlan).exercises?.map((exercise, index) => (
                     <li key={index}>
                       {exercise.name}: {exercise.sets} sets, {exercise.reps} reps, {exercise.weight} kg
                     </li>

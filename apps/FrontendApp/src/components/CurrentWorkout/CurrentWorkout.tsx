@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Checkbox, Button, message } from 'antd';
+
+import { Exercise, WorkoutPlan } from '../../types/Microcycle';
 import styles from './CurrentWorkout.module.css';
 import { MicrocycleService } from '../../../AuthService/MicroCycleService';
-
-interface Exercise {
-  id: string;
-  name: string;
-  sets: number;
-  reps: number;
-  weight: number;
-  completed: boolean;
-  goalMet: boolean;
-}
 
 const CurrentWorkout: React.FC = () => {
   const [workout, setWorkout] = useState<Exercise[]>([]);
@@ -23,7 +15,11 @@ const CurrentWorkout: React.FC = () => {
   const fetchCurrentWorkout = async () => {
     try {
       const response = await MicrocycleService.getCurrentDayWorkout();
-      setWorkout(response.exercises);
+      if (response.type === 'workout') {
+        setWorkout((response as WorkoutPlan).exercises);
+      } else {
+        message.info('Today is a rest day.');
+      }
     } catch (error) {
       message.error('Failed to fetch current workout');
     }
